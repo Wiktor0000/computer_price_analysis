@@ -31,7 +31,6 @@ plt.yticks(rotation=45)
 plt.show()
 
 # Klasteryzacja kmeans
-
 X=df[["cpu_frequency(ghz)", "ram(gb)"]].values
 km=KMeans(n_clusters=3,
           init="random",
@@ -70,3 +69,21 @@ plt.show()
 df["cluster"]=y_km+1
 print(df.groupby("cluster")[["cpu_frequency(ghz)", "ram(gb)"]].mean())
 print(df.groupby("cluster")[["cpu_frequency(ghz)", "ram(gb)"]].std())
+
+#Rozkład cen
+plt.figure(figsize=(10, 6))
+plt.hist(df["price(euro)"], bins=30, color="skyblue", edgecolor="black")
+plt.xlabel("Cena (euro)")
+plt.ylabel("Liczba laptopów")
+plt.title("Rozkład cen laptopów")
+plt.grid()
+plt.show()
+
+#Cena a ilość RAM
+plt.figure(figsize=(10,6))
+plt.scatter(df["ram(gb)"], df["price(euro)"], color="skyblue", alpha=0.7)
+plt.xlabel("Ram (GB)")
+plt.ylabel("Cena (euro)")
+plt.title("Cena vs RAM")
+plt.grid()
+plt.show()
