@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
 
 
 # Wczytywanie df
@@ -28,3 +29,44 @@ plt.figure(figsize=(10,6))
 sns.heatmap(spearman_corr, annot=True, cmap="coolwarm", fmt=".2f")
 plt.yticks(rotation=45)
 plt.show()
+
+# Klasteryzacja kmeans
+
+X=df[["cpu_frequency(ghz)", "ram(gb)"]].values
+km=KMeans(n_clusters=3,
+          init="random",
+          n_init=10,
+          max_iter=300,
+          tol=1e-04,
+          random_state=0)
+y_km = km.fit_predict(X)
+
+plt.scatter(X[y_km == 0, 0],
+            X[y_km == 0, 1],
+            s=50, c="lightgreen",
+            marker="s", edgecolor="black",
+            label="cluster 1")
+plt.scatter(X[y_km == 1, 0],
+            X[y_km == 1, 1],
+            s=50, c="orange",
+            marker="o", edgecolor="black",
+            label="cluster 2")
+plt.scatter(X[y_km == 2, 0],
+            X[y_km == 2, 1],
+            s=50, c="lightblue",
+            marker="v", edgecolor="black",
+            label="cluster 3")
+plt.scatter(km.cluster_centers_[:, 0],
+            km.cluster_centers_[:, 1],
+            s=250, marker="*",
+            c="red", edgecolor="black",
+            label="centroids")
+plt.legend(scatterpoints=1)
+plt.grid()
+plt.xlabel("Cpu Frequency (GHz")
+plt.ylabel("Ram (GB)")
+plt.show()
+
+df["cluster"]=y_km+1
+print(df.groupby("cluster")[["cpu_frequency(ghz)", "ram(gb)"]].mean())
+print(df.groupby("cluster")[["cpu_frequency(ghz)", "ram(gb)"]].std())
